@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.db
+.pytest_cache/
+.vscode/
+.idea/
+test_cv_analysis.py

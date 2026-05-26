@@ -99,15 +99,64 @@ El servidor estará disponible en `http://localhost:8000`. Puedes acceder a la d
 
 ## 🐳 Despliegue con Docker
 
-Hemos optimizado el archivo `Dockerfile` para que cumpla con los estándares más exigentes de seguridad y rendimiento.
+Hemos optimizado el archivo `Dockerfile` para que cumpla con los estándares más exigentes de seguridad y rendimiento. Dispones de varias opciones de despliegue:
 
-### Construir la imagen localmente:
+### Opción 1: Ejecutar desde Docker Hub (Imagen de Producción)
+
+Puedes ejecutar directamente la imagen oficial y optimizada alojada en Docker Hub:
+
+```bash
+docker run -d \
+  -p 8000:8000 \
+  -e GEMINI_API_KEY="tu_clave_de_gemini" \
+  -e API_KEY="tu_token_de_seguridad" \
+  --name relevo-ia-service \
+  polp2/relevo-ia-python:latest
+```
+
+### Opción 2: Configuración en Producción con Docker Compose
+
+Si estás integrando el microservicio en un entorno multi-contenedor orquestado por Docker Compose, puedes usar la siguiente definición:
+
+```yaml
+relevo-ia-service:
+  image: polp2/relevo-ia-python:latest
+  container_name: relevo-ia-service
+  env_file:
+    - .env
+  restart: unless-stopped
+  ports:
+    - "8000:8000"
+  networks:
+    - relevo-net
+  healthcheck:
+    test:
+      [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 20s
+```
+
+> [!NOTE]
+> Asegúrate de tener el archivo `.env` en la misma ruta con los valores para `GEMINI_API_KEY` y `API_KEY`.
+
+### Opción 3: Construir y ejecutar la imagen localmente
+
+Si necesitas modificar el código y reconstruir la imagen localmente:
+
+**1. Construir la imagen:**
 
 ```bash
 docker build -t relevo-ia-python .
 ```
 
-### Arrancar el contenedor:
+**2. Arrancar el contenedor:**
 
 ```bash
 docker run -d \

@@ -25,7 +25,7 @@ async def analyze_cv(payload: AnalyzeRequest):
             )
 
         # 2. Analizar usando Gemini y retornar JSON
-        analysis_result = analyze_cv_text(text)
+        analysis_result = analyze_cv_text(text, payload.language)
         return analysis_result
     except HTTPException as he:
         raise he

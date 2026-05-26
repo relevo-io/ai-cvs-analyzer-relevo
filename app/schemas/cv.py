@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, HttpUrl
 
 class AnalyzeRequest(BaseModel):
     pdf_url: HttpUrl
+    language: str = "es"
 
 class CVAnalysisResponse(BaseModel):
     resumen: str = Field(description="Resumen corto del perfil profesional del candidato en 3-5 líneas")
